@@ -1,0 +1,6 @@
+type NFTArbitrage @entity {
+  id: ID!
+  smartContractAddress: String!
+  blockNumber: Int!
+  blockTimestamp: Int!
+}

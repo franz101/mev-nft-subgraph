@@ -1,0 +1,27 @@
+{
+  "name": "mev-nft",
+  "version": "0.1.0",
+  "repository": "https://github.com/graphprotocol/mev-nft-subgraph",
+  "license": "MIT",
+  "scripts": {
+    "build-contract": "solc contracts/Gravity.sol --abi -o abis --overwrite && solc contracts/Gravity.sol --bin -o bin --overwrite",
+    "create": "graph create mev-nft --node https://api.thegraph.com/deploy/",
+    "create-local": "graph create mev-nft --node http://127.0.0.1:8020",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy-graph": "graph deploy mev-nft --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy": "graph deploy --product hosted-service  franz101/mev-nft ",
+    "deploy-local": "graph deploy mev-nft --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020 -l 'latest'"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.30.2",
+    "@graphprotocol/graph-ts": "^0.27.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "truffle": "^5.0.4",
+    "truffle-contract": "^4.0.5",
+    "truffle-hdwallet-provider": "^1.0.4"
+  }
+}
