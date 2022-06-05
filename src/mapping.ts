@@ -8,9 +8,6 @@ import { NFTArbitrage } from "../generated/schema";
 //0x9e9346e082d445f08fab1758984a31648c89241a
 //0x0d6be5edf91a7a25bf1d9dd14f6c32371bf30ec1
 
-//bugs:
-//https://etherscan.io/tx/0x00c4d8c6afc0c106ca3742fda6be02efca7f5e190311224314163cfb509a33be#eventlog
-
 const knownBots = [
   "0xbe69dde0a051e72e18871be52cf506e419058f11",
   "0x9e9346e082d445f08fab1758984a31648c89241a",
@@ -24,6 +21,7 @@ const blackListTopics = [
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
 ];
 
+// Is triggered by NFT transfers
 export function handleTransfer(event: Transfer): void {
   const transactionReceipt = event.receipt;
   const txHash = event.transaction.hash.toHex();
@@ -34,6 +32,7 @@ export function handleTransfer(event: Transfer): void {
   if (!event.transaction.to) {
     return;
   }
+  // We scan the event logs for double trades by a smart contract
   const logs = transactionReceipt.logs;
   const contractAddress = event.transaction.to!.toHexString();
   if (logs.length < 6 || logs.length > 24) {
@@ -58,6 +57,7 @@ export function handleTransfer(event: Transfer): void {
     const logAddress = eventLog.address.toHexString();
     const eventSignature = eventLog.topics[0].toHexString();
     const mintable = checkIfMint(eventLog);
+    // We use certain criteria to check if its a mint event
 
     if (
       eventSignature == transferTopic &&
@@ -96,7 +96,7 @@ export function handleTransfer(event: Transfer): void {
       }
     }
   }
-
+  // Make sure there is a WETH transfer
   if (!erc20TokenTransfer && (tokenCounter == 0 || tokenCounter > 2)) {
     if (knownBotCheck(contractAddress)) {
       log.error("NO TOKEN BLACKLIST {txHash}", [txHash]);
@@ -126,10 +126,6 @@ const checkIfMint = (eventLog: ethereum.Log): boolean => {
       .toHexString()
       .indexOf("0000000000000000000000000000000000000000") != -1
   );
-};
-
-const countSubString = (inputString: string, subString: string): number => {
-  return inputString.split(subString).length - 1;
 };
 
 const knownBotCheck = (address: string): boolean => {
